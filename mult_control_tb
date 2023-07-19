@@ -1,0 +1,72 @@
+`timescale 1ns / 1ps
+
+module mult_control_tb ();
+
+reg clk , reset_a ,start ;
+reg [1:0] count ;
+wire [1:0] input_sel ;
+wire [1:0] shift_sel ; 
+wire done , clk_ena , sclr_n ;
+
+mult_control UUT(
+.clk(clk),
+.reset_a(reset_a),
+.start(start),
+.count(count),
+.input_sel(input_sel),
+.shift_sel(shift_sel),
+.done(done),
+.clk_ena(clk_ena),
+.sclr_n(sclr_n)
+);
+
+// generate a clk signal 
+localparam T = 10 ;
+always
+begin 
+  clk = 1'b0 ;
+      #( T / 2 );
+  clk = 1'b1 ;
+      #( T / 2 ); 
+end
+
+initial 
+ begin 
+   
+   reset_a = 1'b0 ;
+    start = 1'b0 ;
+    count = 2'b00 ;
+    
+    @(posedge clk )
+    
+    reset_a = 1'b1 ;
+    start = 1'b0 ;
+    count = 2'b00 ;
+    
+    #(T/2)  start = 1'b1 ;
+        count = 2'b00 ;
+    
+    #T  start = 1'b0 ;
+        count = 2'b00 ;
+        
+    #T   start = 1'b0 ;
+         count = 2'b01 ;  
+     
+     #T   start = 1'b0 ;
+          count = 2'b10 ; 
+                
+    #T        start = 1'b0 ;
+             count = 2'b11 ;   
+                        
+    #T       start = 1'b0 ;
+             count = 2'bxx ;     
+             
+    #T        start = 1'b1 ;
+             count = 2'bxx ;  
+             
+    #T    start = 1'b1 ;
+          count = 2'bxx ; 
+             
+    #T  $finish ;                    
+ end 
+endmodule 
